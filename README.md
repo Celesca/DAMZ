@@ -1,6 +1,10 @@
 # DAMZ (Detect-Anything-Model with Zero-shot Object Detection) 
 
+---
+
 ## by Ex_Machina Team 06
+
+## 2nd runner-up AI Thailand Hackathon 2025
 
 ### Objective
 
@@ -117,6 +121,8 @@ The way to did the video object detection in zero-shot training. If the object i
 
 ### Connection to AI4Thais
 
-1. English-Thailand Translation
+1. English-Thailand Translation - supports the Thai prompting
 
-2. Text-Cleasing (NLP)
+2. Text-Cleasing (NLP) - use to clean the Thai text before the translation
+
+3. Text-Summarization (NLP) - use to check the maximum words
