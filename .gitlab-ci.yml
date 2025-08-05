@@ -1,0 +1,85 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+stages:
+  - build
+  - deploy
+
+services:
+  - docker:dind
+
+before_script:
+  - docker info
+
+build:
+  stage: build
+  image: docker:latest
+  tags:
+    - hackathon-siamai2
+  script:
+    - echo "Building team06 Grounding DINO Docker image with GPU support..."
+    - docker-compose build
+  only:
+    - main
+    - develop
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  tags:
+    - hackathon-siamai2
+  script:
+    - docker info
+    - echo "Creating external network if it doesn't exist..."
+    - docker network create ai4thai_net || true
+    - echo "Creating external volumes if they don't exist..."
+    - docker volume create team06-root || true
+    - docker volume create team06-data || true
+    - echo "Creating model storage directory..."
+    - mkdir -p /data/team06/data
+    - echo "Stopping existing containers..."
+    - docker-compose down || true
+    - echo "Stopping and removing potentially conflicting containers..."
+    - docker stop team06-grounding-dino || true
+    - docker rm team06-grounding-dino || true
+    - echo "Starting team06 grounding-dino service..."
+    - docker-compose up -d
+    - echo "Waiting for Grounding DINO service to load model..."
+    - sleep 60
+    - echo "Checking service status..."
+    - docker-compose ps
+    - echo "Testing service health..."
+    - curl -f http://localhost:1600/health || echo "Health check endpoint not available"
+    - echo "Deployment completed successfully"
+  only:
+    - main
+    - develop
+  environment:
+    name: production
+    url: http://localhost:1600
+
+cleanup:
+  stage: deploy
+  image: docker:latest
+  tags:
+    - hackathon-siamai2
+  script:
+    - echo "Cleaning up unused Docker resources..."
+    - docker system prune -f
+    - docker volume prune -f
+  when: manual
+  only:
+    - main
+
+down:
+  stage: deploy
+  image: docker:latest
+  tags:
+    - hackathon-siamai2
+  script:
+    - echo "Down service ..."
+    - docker compose down
+  when: manual
+  only:
+    - main

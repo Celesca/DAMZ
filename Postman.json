@@ -1,0 +1,404 @@
+{
+collection: {
+info: {
+_postman_id: "7fe6cb7e-0c6f-45b4-9753-8907129a0d13",
+name: "team06",
+description: "team 06 requests",
+schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+updatedAt: "2025-08-03T10:50:32.000Z",
+createdAt: "2024-10-30T07:47:13.000Z",
+lastUpdatedBy: "31194739",
+uid: "31194739-7fe6cb7e-0c6f-45b4-9753-8907129a0d13"
+},
+item: [
+{
+name: "Health",
+id: "a93b56f7-9863-44fb-a83a-20f8f358a1dc",
+protocolProfileBehavior: {
+disableBodyPruning: true
+},
+request: {
+method: "GET",
+header: [ ],
+body: {
+mode: "raw",
+raw: "{
+  "image_url": "https://images.squarespace-cdn.com/content/v1/607f89e638219e13eee71b1e/1684821560422-SD5V37BAG28BURTLIXUQ/michael-sum-LEpfefQf4rU-unsplash.jpg",
+  "text_queries": ["a cat", "a remote control", "a person"],
+  "box_threshold": 0.4,
+  "text_threshold": 0.4,
+  "return_visualization": true,
+  "async_processing": false,
+  "priority": 5
+}"
+},
+url: {
+raw: "https://api.hackathon2025.ai.in.th/team06-1/health",
+protocol: "https",
+host: [
+"api",
+"hackathon2025",
+"ai",
+"in",
+"th"
+],
+path: [
+"team06-1",
+"health"
+]
+}
+},
+response: [ ],
+uid: "31194739-a93b56f7-9863-44fb-a83a-20f8f358a1dc"
+},
+{
+name: "Image Detect URL",
+event: [
+{
+listen: "test",
+script: {
+id: "de6d8dcf-11bc-4a29-ad29-0ebae1f1ba2e",
+exec: [
+"var template = `
+",
+"    <style type="text/css">
+",
+"        .image-container {
+",
+"            text-align: center;
+",
+"            margin: 20px;
+",
+"        }
+",
+"        img {
+",
+"            max-width: 100%;
+",
+"            height: auto;
+",
+"        }
+",
+"    </style>
+",
+"
+",
+"    <div class="image-container">
+",
+"        <h2>Detected Image</h2>
+",
+"        <img src="data:image/jpeg;base64,{{response.visualization.image_base64}}" alt="Detected Image"/>
+",
+"    </div>
+",
+"`;
+",
+"
+",
+"function constructVisualizerPayload() {
+",
+"    var res = pm.response.json();
+",
+"    
+",
+"    return {response: res};
+",
+"}
+",
+"
+",
+"pm.visualizer.set(template, constructVisualizerPayload());"
+],
+type: "text/javascript",
+packages: { }
+}
+},
+{
+listen: "prerequest",
+script: {
+id: "45f8920e-84fb-4b25-b726-162e627dde5b",
+exec: [
+""
+],
+type: "text/javascript",
+packages: { }
+}
+}
+],
+id: "df1954d7-6176-4a54-9b33-861397d8317d",
+protocolProfileBehavior: {
+disableBodyPruning: true
+},
+request: {
+method: "POST",
+header: [ ],
+body: {
+mode: "raw",
+raw: "{
+  "image_url": "https://images.squarespace-cdn.com/content/v1/607f89e638219e13eee71b1e/1684821560422-SD5V37BAG28BURTLIXUQ/michael-sum-LEpfefQf4rU-unsplash.jpg",
+  "text_queries": ["a cat", "a remote control", "a person"],
+  "box_threshold": 0.4,
+  "text_threshold": 0.4,
+  "return_visualization": true,
+  "async_processing": false,
+  "priority": 5
+}",
+options: {
+raw: {
+language: "json"
+}
+}
+},
+url: {
+raw: "https://api.hackathon2025.ai.in.th/team06-1/detect",
+protocol: "https",
+host: [
+"api",
+"hackathon2025",
+"ai",
+"in",
+"th"
+],
+path: [
+"team06-1",
+"detect"
+]
+}
+},
+response: [ ],
+uid: "31194739-df1954d7-6176-4a54-9b33-861397d8317d"
+},
+{
+name: "Image Detect Upload",
+event: [
+{
+listen: "test",
+script: {
+id: "de6d8dcf-11bc-4a29-ad29-0ebae1f1ba2e",
+exec: [
+"var template = `
+",
+"    <style type="text/css">
+",
+"        .image-container {
+",
+"            text-align: center;
+",
+"            margin: 20px;
+",
+"        }
+",
+"        img {
+",
+"            max-width: 100%;
+",
+"            height: auto;
+",
+"        }
+",
+"    </style>
+",
+"
+",
+"    <div class="image-container">
+",
+"        <h2>Detected Image</h2>
+",
+"        <img src="data:image/jpeg;base64,{{response.visualization.image_base64}}" alt="Detected Image"/>
+",
+"    </div>
+",
+"`;
+",
+"
+",
+"function constructVisualizerPayload() {
+",
+"    var res = pm.response.json();
+",
+"    
+",
+"    return {response: res};
+",
+"}
+",
+"
+",
+"pm.visualizer.set(template, constructVisualizerPayload());"
+],
+type: "text/javascript",
+packages: { }
+}
+},
+{
+listen: "prerequest",
+script: {
+id: "45f8920e-84fb-4b25-b726-162e627dde5b",
+exec: [
+""
+],
+type: "text/javascript",
+packages: { }
+}
+}
+],
+id: "cdf669b5-550c-4962-8797-ce1b85633f0e",
+protocolProfileBehavior: {
+disableBodyPruning: true
+},
+request: {
+method: "POST",
+header: [ ],
+body: {
+mode: "formdata",
+formdata: [
+{
+key: "file",
+type: "file",
+uuid: "9ec4e0f5-59a5-49a8-a6fd-364bcf1d22f9",
+src: "postman-cloud:///1f07054c-2572-4460-a094-15bdd4159a98"
+},
+{
+key: "text_queries",
+value: ""a cat", "a remote control", "a person"",
+type: "text",
+uuid: "907ab511-6d51-4be8-ad8d-a8070a065095"
+},
+{
+key: "box_threshold",
+value: "0.4",
+type: "text",
+uuid: "bc457d99-ef5a-4d44-9b56-5c276921f85e"
+},
+{
+key: "text_threshold",
+value: "0.4",
+type: "text",
+uuid: "cefb9a7b-d663-42ee-a899-ed131592732a"
+},
+{
+key: "return_visualization",
+value: "true",
+type: "text",
+uuid: "a8c2df54-941d-4232-a96d-067641f7aabc"
+},
+{
+key: "async_processing",
+value: "false",
+type: "text",
+uuid: "987e9438-ff83-4e46-9371-538df4258f5a"
+},
+{
+key: "priority",
+value: "5",
+type: "text",
+uuid: "1030601e-d00c-4455-84dd-b41691e26cf1"
+}
+]
+},
+url: {
+raw: "https://api.hackathon2025.ai.in.th/team06-1/detect/upload",
+protocol: "https",
+host: [
+"api",
+"hackathon2025",
+"ai",
+"in",
+"th"
+],
+path: [
+"team06-1",
+"detect",
+"upload"
+]
+}
+},
+response: [ ],
+uid: "31194739-cdf669b5-550c-4962-8797-ce1b85633f0e"
+},
+{
+name: "Video Action Detect Upload",
+id: "7c15a176-6f53-42f7-b2b0-37d4c2ae9b9e",
+protocolProfileBehavior: {
+disableBodyPruning: true
+},
+request: {
+method: "POST",
+header: [ ],
+body: {
+mode: "formdata",
+formdata: [
+{
+key: "file",
+type: "file",
+uuid: "f991c38f-47e3-4ce8-90b1-9b2b92aaddfb",
+src: "postman-cloud:///1f070579-5463-4f80-a369-eca26afc7fd5"
+},
+{
+key: "prompt",
+value: "person running walking",
+type: "text",
+uuid: "5813c5d0-a0b3-42f3-98dc-38fe6d4426ae"
+},
+{
+key: "person_weight",
+value: "0.3",
+type: "text",
+uuid: "f3239f38-940d-4f31-b5f6-92f4658dbd44"
+},
+{
+key: "action_weight",
+value: "0.6",
+type: "text",
+uuid: "b30e83fc-d7f8-45ba-8cfc-339d13b5bea0"
+},
+{
+key: "context_weight",
+value: "0.1",
+type: "text",
+uuid: "07b81c75-c5ce-4e53-add4-d864d6751930"
+},
+{
+key: "similarity_threshold",
+value: "0.5",
+type: "text",
+uuid: "3d20433f-cbf0-4d12-9237-aabaa65a5bbf"
+},
+{
+key: "action_threshold",
+value: "0.4",
+type: "text",
+uuid: "fb5e8822-32cb-4cce-8fab-4c1a2dca0723"
+},
+{
+key: "return_timeline",
+value: "true",
+type: "text",
+uuid: "6f2f4d27-4f57-4328-8b0a-c938f838c5fb"
+}
+]
+},
+url: {
+raw: "https://api.hackathon2025.ai.in.th/team06-1/video_action/detect/upload",
+protocol: "https",
+host: [
+"api",
+"hackathon2025",
+"ai",
+"in",
+"th"
+],
+path: [
+"team06-1",
+"video_action",
+"detect",
+"upload"
+]
+}
+},
+response: [ ],
+uid: "31194739-7c15a176-6f53-42f7-b2b0-37d4c2ae9b9e"
+}
+]
+}
+}

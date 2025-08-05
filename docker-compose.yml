@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  team06-mq:
+    image: rabbitmq:3-management
+    container_name: team06-mq
+    restart: unless-stopped
+    ports:
+      - "7201:5672"
+      - "7202:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password123
+      - TZ=Asia/Bangkok
+    networks:
+      - ai4thai_net
+
+  team06-grounding-dino:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: team06-grounding-dino
+    restart: unless-stopped
+    ports:
+      - "1600:8000"
+    volumes:
+      - team06-root:/root
+      - team06-data:/app/models
+      - ./images:/app/images:ro
+      - ./results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TRANSFORMERS_CACHE=/app/cache/transformers
+      - HF_HOME=/app/cache/huggingface
+      - HF_TOKEN=${HF_TOKEN}
+      - MODEL_PATH=/app/cache
+      - TZ=Asia/Bangkok
+      - ENVIRONMENT=production
+      - ENABLE_QUEUE=true
+      - RABBITMQ_HOST=team06-mq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=password123
+      - OMP_NUM_THREADS=2
+      - MKL_NUM_THREADS=2
+      - TORCH_HOME=/app/cache/torch
+      - WORKERS=1
+      - MAX_REQUESTS=1000
+      - WORKER_TIMEOUT=120
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+    depends_on:
+      - team06-mq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - ai4thai_net
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+          memory: 2G
+
+  team06-producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: team06-producer
+    restart: unless-stopped
+    ports:
+      - "7203:8000"
+    environment:
+      - GROUNDING_DINO_HOST=team06-grounding-dino
+      - GROUNDING_DINO_PORT=8000
+      - TZ=Asia/Bangkok
+    depends_on:
+      - team06-grounding-dino
+      - team06-mq
+    networks:
+      - ai4thai_net
+
+  team06-consumer:
+    build:
+      context: .
+      dockerfile: consumer/Dockerfile
+    container_name: team06-consumer
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TRANSFORMERS_CACHE=/app/cache/transformers
+      - HF_HOME=/app/cache/huggingface
+      - HF_TOKEN=${HF_TOKEN}
+      - MODEL_PATH=/app/cache
+      - TZ=Asia/Bangkok
+      - RABBITMQ_HOST=team06-mq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=password123
+      - OMP_NUM_THREADS=4
+      - MKL_NUM_THREADS=4
+      - TORCH_HOME=/app/cache/torch
+    volumes:
+      - team06-root:/root
+      - team06-data:/app/models
+    depends_on:
+      - team06-mq
+    networks:
+      - ai4thai_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+
+networks:
+  ai4thai_net:
+    external: true
+
+volumes:
+  team06-root:
+    external: true
+  team06-data:
+    external: true
